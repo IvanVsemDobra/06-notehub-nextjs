@@ -1,6 +1,6 @@
 import { dehydrate, QueryClient } from "@tanstack/react-query";
 import TanStackProvider from "../../../components/TanStackProvider/TanStackProvider";
-import NoteDetailsClient from "./NoteDetails/NoteDetails.client";
+import NoteDetailsClient from "./NoteDetails.client";
 import { fetchNoteById } from "../../../lib/api";
 
 type Props = { params: { id: string } };
