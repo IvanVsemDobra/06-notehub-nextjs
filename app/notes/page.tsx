@@ -1,6 +1,6 @@
 import { dehydrate, QueryClient } from "@tanstack/react-query";
 import TanStackProvider from "../../components/TanStackProvider/TanStackProvider";
-import NotesClient from "./Notes.client";
+import NotesClient from "./new/Notes.client/Notes.client";
 import { fetchNotes } from "../../lib/api";
 
 export const revalidate = 0; // якщо хочеш SSR (no static)
