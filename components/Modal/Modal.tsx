@@ -1,24 +1,24 @@
 "use client";
-import { ReactNode } from "react";
-import styles from "./Modal.module.css";
 
-interface ModalProps {
+import { ReactNode } from "react";
+import css from "./Modal.module.css";
+
+export interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   children: ReactNode;
 }
 
-export default function Modal({ isOpen, onClose, children }: ModalProps) {
+const Modal = ({ isOpen, onClose, children }: ModalProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className={styles.backdrop} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <button className={styles.close} onClick={onClose}>
-          ×
-        </button>
+    <div className={css.backdrop} onClick={onClose}>
+      <div className={css.modal} onClick={(e) => e.stopPropagation()}>
         {children}
       </div>
     </div>
   );
-}
+};
+
+export default Modal;

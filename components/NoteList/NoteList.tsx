@@ -1,43 +1,30 @@
 "use client";
 
-import Link from "next/link";
+import { Note } from "@/types/note";
 import css from "./NoteList.module.css";
-import type { Note } from "@/types/note";
 
-interface NoteListProps {
+export interface NoteListProps {
   notes: Note[];
   onDelete: (id: string) => void;
   isPending: boolean;
 }
 
-export default function NoteList({
-  notes,
-  onDelete,
-  isPending,
-}: NoteListProps) {
+const NoteList = ({ notes, onDelete, isPending }: NoteListProps) => {
+  if (isPending) {
+    return <p className={css.loading}>Loading notes...</p>;
+  }
+
   return (
     <ul className={css.list}>
       {notes.map((note) => (
-        <li key={note.id} className={css.listItem}>
-          <h2 className={css.title}>{note.title}</h2>
-          <p className={css.content}>{note.content}</p>
-          <div className={css.footer}>
-            <span className={css.tag}>{note.tag}</span>
-
-            <Link href={`/notes/${note.id}`} className={css.link}>
-              View details
-            </Link>
-
-            <button
-              className={css.button}
-              onClick={() => onDelete(note.id)}
-              disabled={isPending}
-            >
-              Delete
-            </button>
-          </div>
+        <li key={note.id} className={css.item}>
+          <h3>{note.title}</h3>
+          <p>{note.content}</p>
+          <button onClick={() => onDelete(note.id)}>Delete</button>
         </li>
       ))}
     </ul>
   );
-}
+};
+
+export default NoteList;

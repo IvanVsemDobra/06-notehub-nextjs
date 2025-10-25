@@ -1,30 +1,35 @@
 "use client";
-import styles from "./Pagination.module.css";
 
-interface PaginationProps {
+import css from "./Pagination.module.css";
+
+export interface PaginationProps {
   currentPage: number;
   totalPages: number;
-  onPageChange: (page: number) => void;
+  setCurrentPage: (page: number) => void;
 }
 
-export default function Pagination({
+const Pagination = ({
   currentPage,
   totalPages,
-  onPageChange,
-}: PaginationProps) {
-  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+  setCurrentPage,
+}: PaginationProps) => {
+  const handlePrev = () => currentPage > 1 && setCurrentPage(currentPage - 1);
+  const handleNext = () =>
+    currentPage < totalPages && setCurrentPage(currentPage + 1);
 
   return (
-    <div className={styles.pagination}>
-      {pages.map((page) => (
-        <button
-          key={page}
-          className={`${styles.button} ${page === currentPage ? styles.active : ""}`}
-          onClick={() => onPageChange(page)}
-        >
-          {page}
-        </button>
-      ))}
+    <div className={css.pagination}>
+      <button onClick={handlePrev} disabled={currentPage === 1}>
+        Prev
+      </button>
+      <span>
+        {currentPage} / {totalPages}
+      </span>
+      <button onClick={handleNext} disabled={currentPage === totalPages}>
+        Next
+      </button>
     </div>
   );
-}
+};
+
+export default Pagination;

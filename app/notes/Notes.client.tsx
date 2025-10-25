@@ -3,17 +3,16 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { fetchNotes, type NotesHttpResponse } from "../../lib/api";
-import { useDebounce } from "../../components/hooks/UseDebounce";
-import NoteList from "../../components/NoteList/NoteList";
-import Pagination from "../../components/Pagination/Pagination";
-import SearchBox from "../../components/SearchBox/SearchBox";
-import Modal from "../../components/Modal/Modal";
-import NoteForm from "../../components/NoteForm/NoteForm";
-import Loader from "../../components/Loader/Loader";
-import ErrorMessage from "../../components/ErrorMessage/ErrorMessage";
+import { fetchNotes, type NotesHttpResponse } from "@/lib/api";
+import { useDebounce } from "@/components/hooks/UseDebounce";
+import NoteList from "@/components/NoteList/NoteList";
+import Pagination from "@/components/Pagination/Pagination";
+import SearchBox from "@/components/SearchBox/SearchBox";
+import Modal from "@/components/Modal/Modal";
+import NoteForm from "@/components/NoteForm/NoteForm";
+import Loader from "@/components/Loader/Loader";
+import ErrorMessage from "@/components/ErrorMessage/ErrorMessage";
 import css from "./Notes.client.module.css";
-
 export default function NotesClient() {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchNote, setSearchNote] = useState("");
@@ -22,16 +21,17 @@ export default function NotesClient() {
   const queryClient = useQueryClient();
   const debouncedSearch = useDebounce(searchNote, 500);
 
-  const { data, isLoading, isError, isSuccess } = useQuery<NotesHttpResponse>({
-    queryKey: ["notes", currentPage, debouncedSearch],
-    queryFn: () =>
-      fetchNotes({
-        page: currentPage,
-        perPage: 12,
-        search: debouncedSearch.trim(),
-      }),
-    keepPreviousData: true,
-  });
+  const { data, isLoading, isError, isSuccess, isFetching } =
+    useQuery<NotesHttpResponse>({
+      queryKey: ["notes", currentPage, debouncedSearch],
+      queryFn: () =>
+        fetchNotes({
+          page: currentPage,
+          perPage: 12,
+          search: debouncedSearch.trim(),
+        }),
+      placeholderData: (prevData) => prevData, // заміна keepPreviousData
+    });
 
   useEffect(() => {
     if (
@@ -46,6 +46,10 @@ export default function NotesClient() {
   const handleChange = (query: string) => {
     setCurrentPage(1);
     setSearchNote(query);
+  };
+
+  const handleDelete = (id: string) => {
+    toast.success(`Note with id "${id}" deleted`);
   };
 
   const handleCreated = () => {
@@ -76,13 +80,18 @@ export default function NotesClient() {
 
       {isLoading && <Loader />}
       {isError && <ErrorMessage />}
-      {data?.notes && data.notes.length > 0 && <NoteList notes={data.notes} />}
 
-      {isModalOpen && (
-        <Modal onClose={closeModal}>
-          <NoteForm onCancel={closeModal} onCreated={handleCreated} />
-        </Modal>
+      {data?.notes && data.notes.length > 0 && (
+        <NoteList
+          notes={data.notes}
+          onDelete={handleDelete}
+          isPending={isFetching}
+        />
       )}
+
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+        <NoteForm onCreated={handleCreated} onCancel={closeModal} />
+      </Modal>
     </div>
   );
 }
