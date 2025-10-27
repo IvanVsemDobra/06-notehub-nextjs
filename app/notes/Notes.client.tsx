@@ -23,17 +23,16 @@ export default function NotesClient() {
   const queryClient = useQueryClient();
   const debouncedSearch = useDebounce(searchNote, 500);
 
-  const { data, isLoading, isError, isSuccess, isFetching } =
-    useQuery<NotesHttpResponse>({
-      queryKey: ["notes", currentPage, debouncedSearch],
-      queryFn: () =>
-        fetchNotes({
-          page: currentPage,
-          perPage: 12,
-          search: debouncedSearch.trim(),
-        }),
-      placeholderData: (prevData) => prevData, // заміна keepPreviousData
-    });
+  const { data, isLoading, isError, isSuccess } = useQuery<NotesHttpResponse>({
+    queryKey: ["notes", currentPage, debouncedSearch],
+    queryFn: () =>
+      fetchNotes({
+        page: currentPage,
+        perPage: 12,
+        search: debouncedSearch.trim(),
+      }),
+    placeholderData: (prevData) => prevData,
+  });
 
   useEffect(() => {
     if (
@@ -48,10 +47,6 @@ export default function NotesClient() {
   const handleChange = (query: string) => {
     setCurrentPage(1);
     setSearchNote(query);
-  };
-
-  const handleDelete = (id: string) => {
-    toast.success(`Note with id "${id}" deleted`);
   };
 
   const handleCreated = () => {
@@ -71,7 +66,7 @@ export default function NotesClient() {
           <Pagination
             currentPage={currentPage}
             totalPages={data?.totalPages || 1}
-            setCurrentPage={setCurrentPage}
+            onPageChange={({ selected }) => setCurrentPage(selected + 1)}
           />
         )}
 
@@ -83,17 +78,13 @@ export default function NotesClient() {
       {isLoading && <Loader />}
       {isError && <ErrorMessage />}
 
-      {data?.notes && data.notes.length > 0 && (
-        <NoteList
-          notes={data.notes}
-          onDelete={handleDelete}
-          isPending={isFetching}
-        />
-      )}
+      {data?.notes && data.notes.length > 0 && <NoteList notes={data.notes} />}
 
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
-        <NoteForm onCreated={handleCreated} onCancel={closeModal} />
-      </Modal>
+      {isModalOpen && (
+        <Modal onClose={closeModal}>
+          <NoteForm onCreated={handleCreated} onCancel={closeModal} />
+        </Modal>
+      )}
     </div>
   );
 }
