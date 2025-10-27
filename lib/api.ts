@@ -9,7 +9,7 @@ export interface NotesHttpResponse {
   totalPages: number;
 }
 
-//  Додаємо спільну конфігурацію для axios
+//  Конфігурація axios
 const api = axios.create({
   baseURL: BASE_URL,
   headers: {
@@ -18,7 +18,7 @@ const api = axios.create({
   },
 });
 
-//  Отримати всі нотатки з пагінацією та пошуком
+//  Отримати всі нотатки (з пагінацією та пошуком)
 export const fetchNotes = async ({
   page,
   perPage,
@@ -46,7 +46,8 @@ export const createNote = async (newNote: NewNote): Promise<Note> => {
   return res.data;
 };
 
-//  Видалити нотатку за ID
-export const deleteNote = async (id: string): Promise<void> => {
-  await api.delete(`/notes/${id}`);
+// Видалити нотатку за ID (⚡️ виправлено)
+export const deleteNote = async (id: string): Promise<Note> => {
+  const res = await api.delete<Note>(`/notes/${id}`);
+  return res.data;
 };
