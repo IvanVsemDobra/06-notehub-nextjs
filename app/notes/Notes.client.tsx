@@ -6,6 +6,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchNotes, type NotesHttpResponse } from "@/lib/api";
 import { useDebounce } from "@/components/hooks/UseDebounce";
 
+import SearchBar from "@/components/SearchBox/SearchBox";
 import NoteList from "@/components/NoteList/NoteList";
 import Pagination from "@/components/Pagination/Pagination";
 import SearchBox from "@/components/SearchBox/SearchBox";
@@ -53,7 +54,7 @@ export default function NotesClient() {
     closeModal();
     queryClient.invalidateQueries({ queryKey: ["notes"] });
   };
-
+  <SearchBar onChange={handleChange} />;
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 

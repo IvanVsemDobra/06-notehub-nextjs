@@ -3,7 +3,7 @@ import TanStackProvider from "../../components/TanStackProvider/TanStackProvider
 import NotesClient from "./Notes.client";
 import { fetchNotes } from "../../lib/api";
 
-export const revalidate = 0; // якщо хочеш SSR (no static)
+export const revalidate = 0;
 
 export default async function NotesPage() {
   const queryClient = new QueryClient();
@@ -18,7 +18,6 @@ export default async function NotesPage() {
 
   return (
     <TanStackProvider dehydratedState={dehydratedState}>
-      {/* NotesClient містить всю клієнтську логіку useQuery */}
       <NotesClient />
     </TanStackProvider>
   );
