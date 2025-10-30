@@ -46,7 +46,7 @@ export const createNote = async (newNote: NewNote): Promise<Note> => {
   return res.data;
 };
 
-// Видалити нотатку за ID (⚡️ виправлено)
+// Видалити нотатку за ID
 export const deleteNote = async (id: string): Promise<Note> => {
   const res = await api.delete<Note>(`/notes/${id}`);
   return res.data;
